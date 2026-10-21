@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-4E90VPT897"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-4E90VPT897');
+  </script>
+
+  <!-- SEO Básico & Long-tail -->
+  <title>Limpiar lista de ActiveCampaign gratis | DepuraList</title>
+  <meta name="description" content="Pre-filtra tu lista de contactos de ActiveCampaign eliminando duplicados y correos inválidos localmente, sin subir datos a la nube.">
+  <meta name="keywords" content="limpiar excel correos, eliminar correos duplicados, detectar correos temporales, verificar correos localmente, email marketing list cleaner">
+  <meta name="author" content="René Blanco">
+  <link rel="canonical" href="https://depuralist.com/limpiar-lista-activecampaign/">
+
+  <!-- Open Graph / Redes Sociales -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Limpiar lista de ActiveCampaign gratis | DepuraList">
+  <meta property="og:description" content="Pre-filtra tu lista de contactos de ActiveCampaign eliminando duplicados y correos inválidos localmente, sin subir datos a la nube.">
+  <meta property="og:image" content="https://via.placeholder.com/1200x630.png?text=DepuraList+by+Rene+Blanco">
+  
+  <!-- Twitter Cards -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Limpiar lista de ActiveCampaign gratis | DepuraList">
+  <meta name="twitter:description" content="Pre-filtra tu lista de contactos de ActiveCampaign eliminando duplicados y correos inválidos localmente, sin subir datos a la nube.">
+
+  <!-- Schema.org JSON-LD para SEO -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "DepuraList",
+    "description": "Herramienta basada en el navegador para limpiar y pre-filtrar listas de correo electrónico desde archivos Excel o CSV.",
+    "applicationCategory": "BusinessApplication",
+    "operatingSystem": "All",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "creator": {
+      "@type": "Person",
+      "name": "René Blanco"
+    }
+  }
+  </script>
+
+  <!-- Fuentes: Space Grotesk (Títulos), Inter (Cuerpo), DM Mono (Datos) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Inter:wght@400;600;800&family=Space+Grotesk:wght@500;700;900&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Configuración de Tailwind -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            display: ['"Space Grotesk"', 'sans-serif'],
+            sans: ['"Inter"', 'sans-serif'],
+            mono: ['"DM Mono"', 'monospace'],
+          },
+          colors: {
+            bone: '#F9F8F3',
+            ink: '#131313',
+            highlight: '#E2F04E', // Amarillo táctil
+            danger: '#FF4D4D',
+            success: '#4ADE80'
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* La Textura es Rey: Papel milimétrico / Grid */
+    body {
+      background-color: #F9F8F3;
+      background-image: 
+        linear-gradient(to right, rgba(19, 19, 19, 0.05) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(19, 19, 19, 0.05) 1px, transparent 1px);
+      background-size: 24px 24px;
+      color: #131313;
+    }
+    
+    /* Cuadrículas para contenedores */
+    .bg-grid-bone {
+      background-color: #F9F8F3;
+      background-image: 
+        linear-gradient(to right, rgba(19, 19, 19, 0.05) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(19, 19, 19, 0.05) 1px, transparent 1px);
+      background-size: 24px 24px;
+    }
+
+    .bg-grid-ink {
+      background-color: #131313;
+      background-image: 
+        linear-gradient(to right, rgba(249, 248, 243, 0.08) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(249, 248, 243, 0.08) 1px, transparent 1px);
+      background-size: 24px 24px;
+    }
+
+    /* Utilidad para inputs sin bordes focus feos */
+    .brutal-focus:focus {
+      outline: none;
+      background-color: #FDFDFD;
+    }
+  </style>
+
+  <!-- Scripts de React y XLSX -->
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+</head>
+<body class="min-h-screen flex flex-col font-sans selection:bg-highlight selection:text-ink">
+  <form name="acceso-herramienta" data-netlify="true" netlify-honeypot="bot-field" hidden>
+    <input type="text" name="firstName" />
+    <input type="email" name="email" />
+  </form>
+
+  <div id="root" class="flex-1 flex flex-col"></div>
+
+  <script type="text/babel" data-presets="env" data-plugins="transform-react-jsx">
+    /** @jsxRuntime classic */
+    const { useState, useCallback, useRef, useEffect } = React;
+
+    const IconUpload = () => <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="square" strokeLinejoin="miter"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>;
+    const IconCheck = () => <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="square" strokeLinejoin="miter"><polyline points="20 6 9 17 4 12"></polyline></svg>;
+    const IconAlert = () => <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="square" strokeLinejoin="miter"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>;
+    const IconDownload = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="square" strokeLinejoin="miter"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>;
+    const IconGlobe = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="square" strokeLinejoin="miter"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10z"></path></svg>;
+
+    const i18n = {
+      es: {
+        navTitle: "DepuraList.",
+        navStory: "La Historia",
+        navHow: "Tutorial",
+        navLang: "EN",
+        heroPill: "Limpiador de Correos · Client-Side",
+        heroTitle1: "Limpia tu lista de",
+        heroSub: "No pagues por validar basura. Las herramientas premium te cobran cientos de dólares. DepuraList hace el 80% del trabajo duro gratis, filtrando correos falsos y duplicados localmente en tu computadora antes de que pagues.",
+        inputNamePlaceholder: "Tu nombre...",
+        inputPlaceholder: "Tu correo electrónico...",
+        heroNote: "💡 Lo único que necesitas es tu lista de emails en un archivo de Excel o CSV.",
+        btnAccess: "LIMPIAR MI EXCEL AHORA",
+        spamNote: "*Solo métricas internas de mi portafolio. Cero spam.",
+        storyTitle: "El Dolor: Listas Sucias = Dinero Tirado",
+        storyP1: "Si haces Email Marketing, sabes que enviar a correos rebotados destruye tu reputación y te manda a SPAM.",
+        storyP2: "El problema de usar servicios profesionales de verificación es que pagas por cada ping. Si subes una lista en bruto, pagarás por validar correos que claramente eran falsos (test@test.com), duplicados, o que tenían errores de dedo obvios (juan@gmai.com).",
+        storyP3: "Solución: DepuraList procesa tu archivo de forma segura en tu navegador (sin bases de datos). Te ahorro dinero eliminando hasta un 30% de basura técnica antes de que abras tu billetera.",
+        howTitle: "Instrucciones a prueba de fallos",
+        howStep1: "1. Sube tu archivo",
+        howDesc1: "Solo necesitas subir tu Excel (.xlsx) o .csv. Detectaré la columna de correo automáticamente.",
+        howStep2: "2. La máquina trabaja",
+        howDesc2: "Cruzo tu lista contra +40k dominios temporales y reparo errores comunes en milisegundos.",
+        howStep3: "3. Exporta limpio",
+        howDesc3: "Descarga un Excel impecable, listo para subir a Mailchimp, HubSpot o tu validador de pago.",
+        uploadTitle: "Sube tu archivo para iniciar.",
+        uploadSub: "El procesamiento es 100% en tu computadora. Nada se sube a ningún servidor.",
+        dropArea: "Haz clic o arrastra tu .XLSX / .CSV aquí",
+        processing: "TRITURANDO BASURA...",
+        resultsTitle: "Auditoría de Limpieza",
+        resultsSub: "Aquí está lo que sobrevivió y lo que eliminé.",
+        btnReset: "NUEVO ARCHIVO",
+        statTotal: "FILAS LEÍDAS",
+        statValid: "CORREOS VÁLIDOS",
+        statFixed: "AUTOCORREGIDOS",
+        breakdownTitle: "CANTIDAD DE BASURA ELIMINADA",
+        reasonDupes: "DUPLICADOS",
+        reasonSpam: "TEMP/SPAM",
+        reasonRoles: "ROLES (admin@)",
+        reasonFormat: "FORMATO ROTO",
+        tabClean: "LISTA LIMPIA",
+        tabTrash: "BASURERO",
+        colName: "NOMBRE",
+        colEmail: "CORREO",
+        colStatus: "ESTADO",
+        colRow: "FILA",
+        colReason: "MOTIVO",
+        btnDownloadClean: "DESCARGAR LISTA LIMPIA",
+        btnDownloadTrash: "DESCARGAR REPORTE BASURA",
+        ctaBottomTitle: "¿Listo para dejar de pagar por basura?",
+        ctaBottomSub: "Toma el control de tu base de datos y mejora tu entregabilidad en segundos.",
+        footerPhrase: "La vida es muy corta para mandar correos al vacío.",
+        footerAuthor: "Hecho con 💻 en 🇲🇽 por",
+        footerPrivacy: "Aviso de Privacidad: Logrado gracias a un script de JavaScript puro corriendo localmente en tu navegador. Tus datos nunca tocan una base de datos ni se suben a un servidor externo (Client-Side Processing puro).",
+        footerOtherProjects: "📦 Otros de mis proyectos",
+        footerProj1Desc: "Limpia y estructura bases de datos complejas exportadas desde Typeform. Ideal para organizar respuestas con saltos lógicos en segundos sin pelear con Excel.",
+        footerProj2Desc: "Rescata tus textos de WordPress. Exporta tus artículos a Word, PDF o texto plano con un clic. Sin bases de datos, sin distracciones, sin complicaciones."
+      },
+      en: {
+        navTitle: "DepuraList.",
+        navStory: "The Story",
+        navHow: "How-To",
+        navLang: "ES",
+        heroPill: "Email List Cleaner · Client-Side",
+        heroTitle1: "Clean your",
+        heroSub: "Don't pay to validate trash. Premium verification services charge hundreds of dollars. DepuraList does 80% of the heavy lifting for free, filtering fake emails and duplicates locally on your computer before you pay.",
+        inputNamePlaceholder: "Your first name...",
+        inputPlaceholder: "Your email address...",
+        heroNote: "💡 All you need is your email list in an Excel file or CSV.",
+        btnAccess: "CLEAN MY EXCEL NOW",
+        spamNote: "*Only for my portfolio metrics. Zero spam.",
+        storyTitle: "The Pain: Dirty Lists = Wasted Money",
+        storyP1: "If you do Email Marketing, you know bounced emails destroy your domain reputation and send you straight to SPAM.",
+        storyP2: "The problem with pro verifiers is you pay per check. If you upload raw lists, you pay to validate emails that were obviously fake (test@test.com), duplicates, or had clear typos (john@gmai.com).",
+        storyP3: "The Solution: DepuraList processes your file safely in your browser (no databases). I save you money by scrubbing up to 30% of technical garbage before you open your wallet.",
+        howTitle: "Foolproof Instructions",
+        howStep1: "1. Upload your file",
+        howDesc1: "Just upload your Excel (.xlsx) or .csv. I'll auto-detect the email column.",
+        howStep2: "2. The machine works",
+        howDesc2: "I cross-reference your list against +40k disposable domains and fix typos in milliseconds.",
+        howStep3: "3. Export clean data",
+        howDesc3: "Download a pristine Excel, ready for Mailchimp, HubSpot, or your paid verifier.",
+        uploadTitle: "Upload your file to start.",
+        uploadSub: "Processing is 100% on your machine. Nothing is uploaded to any servers.",
+        dropArea: "Click or drag your .XLSX / .CSV here",
+        processing: "SHREDDING TRASH...",
+        resultsTitle: "Cleaning Audit",
+        resultsSub: "Here is what survived and what I killed.",
+        btnReset: "NEW FILE",
+        statTotal: "ROWS READ",
+        statValid: "VALID EMAILS",
+        statFixed: "AUTO-FIXED",
+        breakdownTitle: "TRASH ELIMINATED",
+        reasonDupes: "DUPLICATES",
+        reasonSpam: "TEMP/SPAM",
+        reasonRoles: "ROLES (admin@)",
+        reasonFormat: "BROKEN FORMAT",
+        tabClean: "CLEAN LIST",
+        tabTrash: "TRASH CAN",
+        colName: "NAME",
+        colEmail: "EMAIL",
+        colStatus: "STATUS",
+        colRow: "ROW",
+        colReason: "REASON",
+        btnDownloadClean: "DOWNLOAD CLEAN LIST",
+        btnDownloadTrash: "DOWNLOAD TRASH LOG",
+        ctaBottomTitle: "Ready to stop paying for trash?",
+        ctaBottomSub: "Take control of your database and improve your deliverability in seconds.",
+        footerPhrase: "Life is too short to send emails into the void.",
+        footerAuthor: "Built with 💻 in 🇲🇽 by",
+        footerPrivacy: "Privacy Notice: Achieved using a pure JavaScript script running locally in your browser. Your data never touches a database or an external server (Pure Client-Side Processing).",
+        footerOtherProjects: "📦 Other projects of mine",
+        footerProj1Desc: "Clean and structure complex database exports from Typeform. Perfect for organizing responses with logic jumps in seconds without fighting Excel.",
+        footerProj2Desc: "Rescue your WordPress content. Export your posts to Word, PDF, or plain text with one click. No databases, no distractions, no complications."
+      }
+    };
+
+    function App() {
+      const [lang, setLang] = useState('es');
+      const t = i18n[lang];
+
+      // --- MÁQUINA DE PSEO ---
+      const nicho = 'ActiveCampaign'; // pSEO: hardcoded
+
+      useEffect(() => {
+        const userLang = navigator.language || navigator.userLanguage;
+        if (userLang.startsWith('en')) setLang('en');
+      }, []);
+
+      const toggleLang = () => setLang(prev => prev === 'es' ? 'en' : 'es');
+
+      const [step, setStep] = useState(0); 
+      const [isProcessing, setIsProcessing] = useState(false);
+      const [stats, setStats] = useState({ total: 0, valid: 0, invalid: 0, fixed: 0, disposable: 0, duplicates: 0, roles: 0, formatError: 0 });
+      const [validEmails, setValidEmails] = useState([]);
+      const [invalidEmails, setInvalidEmails] = useState([]);
+      const [disposableDomains, setDisposableDomains] = useState(new Set());
+      const [currentPage, setCurrentPage] = useState(1);
+      const itemsPerPage = 50;
+      const [activeTab, setActiveTab] = useState('valid');
+      const fileInputRef = useRef(null);
+
+      useEffect(() => {
+        fetch('https://raw.githubusercontent.com/ivolo/disposable-email-domains/master/index.json')
+          .then(res => res.json())
+          .then(data => setDisposableDomains(new Set(data)))
+          .catch(err => console.error("Error cargando dominios temporales:", err));
+      }, []);
+
+      const rolePrefixes = ['admin', 'administrador', 'info', 'ventas', 'sales', 'contacto', 'contact', 'soporte', 'support', 'webmaster', 'gerencia', 'direccion', 'hola', 'hello', 'facturacion', 'billing', 'pagos', 'marketing', 'rrhh', 'hr', 'recepcion', 'office', 'prensa', 'press', 'compras', 'abuse', 'test'];
+      const domainFixes = { 'gmai.com': 'gmail.com', 'gamil.com': 'gmail.com', 'gimail.com': 'gmail.com', 'gmal.com': 'gmail.com', 'gmail.con': 'gmail.com', 'outlok.com': 'outlook.com', 'outloo.com': 'outlook.com', 'outlook.con': 'outlook.com', 'hotmal.com': 'hotmail.com', 'hotmai.com': 'hotmail.com', 'hormail.com': 'hotmail.com', 'hotmail.con': 'hotmail.com', 'yaho.com': 'yahoo.com', 'yahoo.con': 'yahoo.com' };
+
+      const processFile = async (file) => {
+        if (!window.XLSX) return alert("Librerías cargando...");
+        setIsProcessing(true);
+        try {
+          const XLSX = window.XLSX;
+          const data = await file.arrayBuffer();
+          const workbook = XLSX.read(data);
+          const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+          const jsonData = XLSX.utils.sheet_to_json(worksheet, { defval: '' });
+          if (jsonData.length === 0) { setIsProcessing(false); return; }
+          const keys = Object.keys(jsonData[0]);
+          const emailKey = keys.find(k => /email|correo|e-mail/i.test(k)) || keys[0]; 
+          const nameKey = keys.find(k => /nombre|name|cliente/i.test(k)); 
+          const valid = []; const invalid = []; const seenEmails = new Set();
+          let cFix = 0, cDisp = 0, cDup = 0, cRole = 0, cFmt = 0;
+          jsonData.forEach((row, index) => {
+            let originalEmail = String(row[emailKey] || '').replace(/\s+/g, '').toLowerCase();
+            const name = nameKey ? String(row[nameKey] || '').trim() : `Row ${index + 2}`;
+            const rowNum = index + 2; 
+            if (!originalEmail) return; 
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(originalEmail)) {
+              invalid.push({ name, email: originalEmail, reason: 'Formato', row: rowNum });
+              cFmt++; return;
+            }
+            let [localPart, domain] = originalEmail.split('@');
+            let currentEmail = originalEmail;
+            let wasFixed = false;
+            if (domainFixes[domain]) { domain = domainFixes[domain]; currentEmail = `${localPart}@${domain}`; wasFixed = true; cFix++; }
+            if (rolePrefixes.includes(localPart)) { invalid.push({ name, email: currentEmail, original: originalEmail, reason: 'Rol', row: rowNum }); cRole++; return; }
+            if (disposableDomains.has(domain)) { invalid.push({ name, email: currentEmail, original: originalEmail, reason: 'Spam/Temp', row: rowNum }); cDisp++; return; }
+            if (seenEmails.has(currentEmail)) { invalid.push({ name, email: currentEmail, original: originalEmail, reason: 'Duplicado', row: rowNum }); cDup++; return; }
+            seenEmails.add(currentEmail);
+            valid.push({ [t.colName]: name, [t.colEmail]: currentEmail, _wasFixed: wasFixed, _original: originalEmail });
+          });
+          setValidEmails(valid); setInvalidEmails(invalid);
+          setStats({ total: valid.length + invalid.length, valid: valid.length, invalid: invalid.length, fixed: cFix, disposable: cDisp, duplicates: cDup, roles: cRole, formatError: cFmt });
+          setStep(2); setCurrentPage(1);
+        } catch (error) { console.error(error); alert("Error leyendo el archivo."); } finally { setIsProcessing(false); }
+      };
+
+      const handleAccess = (e) => {
+        e.preventDefault();
+        fetch("/", {
+          method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body: new URLSearchParams({ "form-name": "acceso-herramienta", "firstName": e.target.firstName.value, "email": e.target.email.value }).toString()
+        }).then(() => setStep(1)).catch(() => setStep(1));
+      };
+
+      const exportToExcel = (data, filename) => {
+        if (!window.XLSX) return;
+        const XLSX = window.XLSX;
+        const cleanData = data.map(item => { const { _wasFixed, _original, ...rest } = item; return rest; });
+        const ws = XLSX.utils.json_to_sheet(cleanData);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "Data");
+        XLSX.writeFile(wb, filename);
+      };
+
+      return (
+        <div className="flex-1 flex flex-col">
+          <nav className="border-b-4 border-ink bg-bone sticky top-0 z-50">
+            <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+              <div className="flex items-center gap-2 cursor-pointer" onClick={() => setStep(0)}>
+                <div className="bg-highlight border-2 border-ink p-1">
+                  <IconCheck />
+                </div>
+                <span className="text-2xl font-black font-display tracking-tighter uppercase">{t.navTitle}</span>
+              </div>
+              <div className="hidden md:flex items-center gap-8 font-bold font-sans text-sm uppercase tracking-wider">
+                <a href="#historia" className="hover:underline decoration-2 underline-offset-4">{t.navStory}</a>
+                <a href="#tutorial" className="hover:underline decoration-2 underline-offset-4">{t.navHow}</a>
+              </div>
+              <button onClick={toggleLang} className="flex items-center gap-2 border-2 border-ink px-3 py-1 bg-white font-bold text-sm hover:bg-ink hover:text-white transition-colors">
+                <IconGlobe /> {t.navLang}
+              </button>
+            </div>
+          </nav>
+
+          <main className="flex-1 max-w-7xl mx-auto w-full px-6 py-12 md:py-20">
+            {step === 0 && (
+              <div className="animate-in fade-in duration-500">
+                <div className="max-w-4xl">
+                  <div className="inline-block border-2 border-ink bg-white px-4 py-1 font-bold text-xs uppercase tracking-widest mb-8">
+                    {t.heroPill}
+                  </div>
+                  <h1 className="text-5xl md:text-7xl lg:text-8xl font-black font-display leading-[0.9] tracking-tighter uppercase">
+                    {t.heroTitle1} <br/>
+                    <span className="bg-highlight px-2 leading-tight border-2 border-ink inline-block mt-2 -rotate-1">
+                       {nicho !== 'Emails' && nicho !== 'Correos' 
+                          ? (lang === 'es' ? `correos de ${nicho}` : `${nicho} email list`) 
+                          : (lang === 'es' ? `correos gratis` : `email list for free`)}
+                    </span>
+                  </h1>
+                  <p className="mt-8 text-xl md:text-2xl font-sans font-medium max-w-2xl border-l-4 border-ink pl-6">
+                    {t.heroSub}
+                  </p>
+                  <form onSubmit={handleAccess} className="mt-12 flex flex-col lg:flex-row gap-4 max-w-4xl w-full">
+                    <input type="text" name="firstName" required placeholder={t.inputNamePlaceholder} className="w-full border-4 border-ink p-4 font-mono text-lg brutal-focus bg-white" />
+                    <input type="email" name="email" required placeholder={t.inputPlaceholder} className="w-full border-4 border-ink p-4 font-mono text-lg brutal-focus bg-white" />
+                    <button type="submit" className="w-full flex items-center justify-center whitespace-nowrap bg-ink text-bone font-display font-bold text-lg px-6 py-4 border-4 border-transparent hover:bg-highlight hover:text-ink hover:border-ink transition-all">
+                      {t.btnAccess}
+                    </button>
+                  </form>
+                  
+                  <div className="mt-6 flex flex-col items-start gap-2">
+                    <p className="font-sans font-bold text-ink bg-highlight inline-block px-3 py-1 border-2 border-ink">
+                      {t.heroNote}
+                    </p>
+                    <p className="font-mono text-xs text-gray-500 ml-1">{t.spamNote}</p>
+                  </div>
+                </div>
+
+                <div id="historia" className="mt-32 border-t-4 border-ink pt-16 grid grid-cols-1 md:grid-cols-2 gap-16">
+                  <h2 className="text-4xl font-black font-display uppercase tracking-tight mb-6">{t.storyTitle}</h2>
+                  <div className="space-y-6 font-sans text-lg font-medium leading-relaxed">
+                    <p>{t.storyP1}</p>
+                    <p className="bg-white p-6 border-2 border-ink">{t.storyP2}</p>
+                    <p><strong>{t.storyP3}</strong></p>
+                  </div>
+                </div>
+
+                <div id="tutorial" className="mt-32">
+                  <h2 className="text-4xl font-black font-display uppercase tracking-tight mb-12 text-center">{t.howTitle}</h2>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div className="bg-white border-4 border-ink p-8 relative">
+                      <div className="absolute -top-5 -left-5 bg-highlight border-4 border-ink w-12 h-12 flex items-center justify-center font-black text-xl">1</div>
+                      <h3 className="font-display font-bold text-2xl mb-4 mt-2">{t.howStep1}</h3>
+                      <p className="font-sans font-medium">{t.howDesc1}</p>
+                    </div>
+                    <div className="bg-ink text-bone border-4 border-ink p-8 relative">
+                      <div className="absolute -top-5 -left-5 bg-white text-ink border-4 border-ink w-12 h-12 flex items-center justify-center font-black text-xl">2</div>
+                      <h3 className="font-display font-bold text-2xl mb-4 mt-2">{t.howStep2}</h3>
+                      <p className="font-sans font-medium opacity-90">{t.howDesc2}</p>
+                    </div>
+                    <div className="bg-success border-4 border-ink p-8 relative">
+                      <div className="absolute -top-5 -left-5 bg-white border-4 border-ink w-12 h-12 flex items-center justify-center font-black text-xl">3</div>
+                      <h3 className="font-display font-bold text-2xl mb-4 mt-2">{t.howStep3}</h3>
+                      <p className="font-sans font-medium">{t.howDesc3}</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mt-32 border-t-4 border-ink pt-24 pb-12 flex flex-col items-center text-center">
+                  <h2 className="text-5xl md:text-6xl font-black font-display uppercase tracking-tighter mb-6">
+                    {t.ctaBottomTitle}
+                  </h2>
+                  <p className="font-sans text-xl md:text-2xl font-medium max-w-2xl mb-12">{t.ctaBottomSub}</p>
+                  
+                  {/* FORMULARIO INFERIOR CORREGIDO */}
+                  <form onSubmit={handleAccess} className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-4xl w-full text-left">
+                    <input type="text" name="firstName" required placeholder={t.inputNamePlaceholder} className="w-full border-4 border-ink p-4 font-mono text-lg brutal-focus bg-white" />
+                    <input type="email" name="email" required placeholder={t.inputPlaceholder} className="w-full border-4 border-ink p-4 font-mono text-lg brutal-focus bg-white" />
+                    <button type="submit" className="w-full flex items-center justify-center whitespace-nowrap bg-ink text-bone font-display font-bold text-lg px-6 py-4 border-4 border-transparent hover:bg-highlight hover:text-ink hover:border-ink transition-all">
+                      {t.btnAccess}
+                    </button>
+                  </form>
+                  
+                  <div className="mt-8 flex flex-col items-center gap-2">
+                    <p className="font-sans font-bold text-ink bg-highlight inline-block px-4 py-2 border-2 border-ink">{t.heroNote}</p>
+                    <p className="font-mono text-xs text-gray-500 mt-2">{t.spamNote}</p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {step === 1 && (
+              <div className="max-w-3xl mx-auto mt-12 animate-in fade-in zoom-in-95 duration-300">
+                <div className="mb-8">
+                  <h2 className="text-4xl font-black font-display uppercase tracking-tighter">{t.uploadTitle}</h2>
+                  <p className="font-mono mt-2 font-medium bg-highlight inline-block px-2 border-2 border-ink">{t.uploadSub}</p>
+                </div>
+                <div onDrop={(e) => { e.preventDefault(); if(e.dataTransfer.files[0]) processFile(e.dataTransfer.files[0]); }} onDragOver={e => e.preventDefault()} onClick={() => fileInputRef.current?.click()} className={`border-4 border-ink bg-white p-20 text-center cursor-pointer transition-all hover:bg-slate-50`}>
+                  <input type="file" ref={fileInputRef} onChange={e => { if(e.target.files[0]) processFile(e.target.files[0]); }} accept=".xlsx, .xls, .csv" className="hidden" />
+                  {isProcessing ? (
+                    <div className="flex flex-col items-center animate-pulse">
+                      <IconUpload className="mb-4" />
+                      <h3 className="text-3xl font-black font-display uppercase">{t.processing}</h3>
+                    </div>
+                  ) : (
+                    <div className="flex flex-col items-center">
+                      <div className="bg-ink text-white p-4 rounded-full mb-6"><IconUpload /></div>
+                      <h3 className="text-2xl font-bold font-sans">{t.dropArea}</h3>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {step === 2 && (
+              <div className="animate-in fade-in duration-500">
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 border-b-4 border-ink pb-6 gap-4">
+                  <div>
+                    <h2 className="text-4xl font-black font-display uppercase tracking-tighter">{t.resultsTitle}</h2>
+                    <p className="font-mono mt-2 font-medium">{t.resultsSub}</p>
+                  </div>
+                  <button onClick={() => { setStep(1); setValidEmails([]); setInvalidEmails([]); }} className="border-4 border-ink bg-white font-bold px-6 py-3 hover:bg-highlight transition-colors uppercase">
+                    {t.btnReset}
+                  </button>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+                  <div className="bg-white border-4 border-ink p-6">
+                    <p className="font-bold font-sans uppercase text-sm mb-2">{t.statTotal}</p>
+                    <p className="font-mono text-5xl font-black">{stats.total}</p>
+                  </div>
+                  <div className="bg-success border-4 border-ink p-6">
+                    <p className="font-bold font-sans uppercase text-sm mb-2 text-ink flex items-center gap-2"><IconCheck/> {t.statValid}</p>
+                    <p className="font-mono text-5xl font-black">{stats.valid}</p>
+                  </div>
+                  <div className="bg-highlight border-4 border-ink p-6">
+                    <p className="font-bold font-sans uppercase text-sm mb-2 text-ink flex items-center gap-2"><IconAlert/> {t.statFixed}</p>
+                    <p className="font-mono text-5xl font-black">{stats.fixed}</p>
+                  </div>
+                </div>
+                <div className="bg-danger text-ink border-4 border-ink p-6 mb-12">
+                  <h3 className="font-black font-display text-2xl uppercase tracking-tighter mb-4 border-b-2 border-ink pb-2">{t.breakdownTitle} ({stats.invalid})</h3>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-6 font-mono">
+                    <div><p className="font-bold text-sm uppercase">{t.reasonDupes}</p><p className="text-3xl font-black">{stats.duplicates}</p></div>
+                    <div><p className="font-bold text-sm uppercase">{t.reasonSpam}</p><p className="text-3xl font-black">{stats.disposable}</p></div>
+                    <div><p className="font-bold text-sm uppercase">{t.reasonRoles}</p><p className="text-3xl font-black">{stats.roles}</p></div>
+                    <div><p className="font-bold text-sm uppercase">{t.reasonFormat}</p><p className="text-3xl font-black">{stats.formatError}</p></div>
+                  </div>
+                </div>
+                <div className="bg-white border-4 border-ink overflow-hidden flex flex-col h-[600px]">
+                  <div className="flex border-b-4 border-ink bg-bone">
+                    <button onClick={() => { setActiveTab('valid'); setCurrentPage(1); }} className={`flex-1 py-4 px-6 font-black font-display text-lg tracking-tight transition-colors border-r-4 border-ink uppercase ${activeTab === 'valid' ? 'bg-success text-ink' : 'hover:bg-gray-200'}`}>{t.tabClean}</button>
+                    <button onClick={() => { setActiveTab('invalid'); setCurrentPage(1); }} className={`flex-1 py-4 px-6 font-black font-display text-lg tracking-tight transition-colors uppercase ${activeTab === 'invalid' ? 'bg-danger text-ink' : 'hover:bg-gray-200'}`}>{t.tabTrash}</button>
+                  </div>
+                  <div className="flex-1 overflow-auto bg-white">
+                    {activeTab === 'valid' && (
+                      <table className="w-full text-left border-collapse font-mono text-sm">
+                        <thead className="sticky top-0 bg-bone border-b-4 border-ink z-10">
+                          <tr><th className="py-3 px-4 border-r-2 border-ink uppercase">{t.colName}</th><th className="py-3 px-4 border-r-2 border-ink uppercase">{t.colEmail}</th><th className="py-3 px-4 uppercase text-right">{t.colStatus}</th></tr>
+                        </thead>
+                        <tbody>
+                          {validEmails.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map((item, i) => (
+                            <tr key={i} className="border-b-2 border-gray-100 hover:bg-highlight/20">
+                              <td className="py-2 px-4 border-r-2 border-gray-100">{item[t.colName]}</td>
+                              <td className="py-2 px-4 border-r-2 border-gray-100 font-bold">{item[t.colEmail]}</td>
+                              <td className="py-2 px-4 text-right">{item._wasFixed ? <span className="bg-highlight px-2 border border-ink text-xs font-bold uppercase tracking-tighter">FIXED</span> : <span className="text-gray-400">OK</span>}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    )}
+                    {activeTab === 'invalid' && (
+                      <table className="w-full text-left border-collapse font-mono text-sm">
+                        <thead className="sticky top-0 bg-bone border-b-4 border-ink z-10">
+                          <tr><th className="py-3 px-4 border-r-2 border-ink uppercase w-20">{t.colRow}</th><th className="py-3 px-4 border-r-2 border-ink uppercase">{t.colEmail}</th><th className="py-3 px-4 uppercase">{t.colReason}</th></tr>
+                        </thead>
+                        <tbody>
+                          {invalidEmails.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map((item, i) => (
+                            <tr key={i} className="border-b-2 border-gray-100 hover:bg-danger/10 text-gray-500">
+                              <td className="py-2 px-4 border-r-2 border-gray-100">#{item.row}</td><td className="py-2 px-4 border-r-2 border-gray-100 line-through">{item.original}</td><td className="py-2 px-4"><span className="bg-ink text-bone px-2 font-bold text-xs uppercase">{item.reason}</span></td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    )}
+                  </div>
+                  <div className="bg-bone border-t-4 border-ink p-4 flex flex-col sm:flex-row justify-between items-center gap-4">
+                    <div className="flex items-center gap-4 font-mono font-bold">
+                      <button onClick={() => setCurrentPage(p => Math.max(1, p - 1))} disabled={currentPage === 1} className="px-3 py-1 bg-white border-2 border-ink disabled:opacity-50">←</button>
+                      <span>{currentPage} / {Math.max(1, Math.ceil((activeTab === 'valid' ? validEmails.length : invalidEmails.length) / itemsPerPage))}</span>
+                      <button onClick={() => setCurrentPage(p => Math.min(Math.ceil((activeTab === 'valid' ? validEmails.length : invalidEmails.length) / itemsPerPage), p + 1))} disabled={currentPage === Math.ceil((activeTab === 'valid' ? validEmails.length : invalidEmails.length) / itemsPerPage) || (activeTab === 'valid' ? validEmails.length : invalidEmails.length) === 0} className="px-3 py-1 bg-white border-2 border-ink disabled:opacity-50">→</button>
+                    </div>
+                    {activeTab === 'valid' && validEmails.length > 0 && (<button onClick={() => exportToExcel(validEmails, 'Lista_Limpia.xlsx')} className="flex items-center gap-2 px-6 py-3 bg-ink text-bone font-display font-bold uppercase border-2 border-transparent hover:bg-success hover:text-ink hover:border-ink transition-all"><IconDownload /> {t.btnDownloadClean}</button>)}
+                    {activeTab === 'invalid' && invalidEmails.length > 0 && (<button onClick={() => exportToExcel(invalidEmails, 'Basura_Descartada.xlsx')} className="flex items-center gap-2 px-6 py-3 bg-white text-ink border-2 border-ink font-display font-bold uppercase hover:bg-danger transition-all"><IconDownload /> {t.btnDownloadTrash}</button>)}
+                  </div>
+                </div>
+              </div>
+            )}
+          </main>
+          
+          <footer className="border-t-4 border-ink bg-grid-ink text-bone py-16 px-6 mt-auto font-sans">
+            <div className="max-w-7xl mx-auto flex flex-col items-center text-center">
+              <p className="text-2xl font-display font-bold italic mb-12">"{t.footerPhrase}"</p>
+              
+              {/* TÍTULO Y CAJA DE PROYECTOS ARREGLADOS (SIN SOMBRAS, SIN MÁRGENES NEGATIVOS) */}
+              <div className="w-full max-w-4xl border-4 border-highlight bg-grid-bone text-ink p-8 mb-12 text-left">
+                <h4 className="font-display font-black text-2xl uppercase mb-8 border-4 border-ink bg-white inline-block px-4 py-2">{t.footerOtherProjects}</h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  <div className="bg-white border-4 border-ink p-6 flex flex-col items-start transition-transform hover:-translate-y-1">
+                    <a href="https://typemerge.com" target="_blank" className="inline-block font-display font-black text-xl hover:text-highlight transition-colors bg-ink text-bone px-2 py-1 uppercase tracking-tighter">TypeMerge.com</a>
+                    <p className="text-sm mt-4 text-ink font-medium leading-relaxed">{t.footerProj1Desc}</p>
+                  </div>
+                  <div className="bg-white border-4 border-ink p-6 flex flex-col items-start transition-transform hover:-translate-y-1">
+                    <a href="https://textopress.netlify.app" target="_blank" className="inline-block font-display font-black text-xl hover:text-highlight transition-colors bg-ink text-bone px-2 py-1 uppercase tracking-tighter">TextoPress</a>
+                    <p className="text-sm mt-4 text-ink font-medium leading-relaxed">{t.footerProj2Desc}</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* ENLACES pSEO PARA INDEXACIÓN (Googlebot only) */}
+              <div className="mb-12 flex flex-wrap justify-center gap-4 text-xs opacity-40 font-mono uppercase font-bold tracking-widest max-w-3xl">
+                <a href="/?nicho=Mailchimp" className="hover:text-highlight">Mailchimp</a>
+                <a href="/?nicho=HubSpot" className="hover:text-highlight">HubSpot</a>
+                <a href="/?nicho=ActiveCampaign" className="hover:text-highlight">ActiveCampaign</a>
+                <a href="/?nicho=Shopify" className="hover:text-highlight">Shopify</a>
+                <a href="/?nicho=B2B" className="hover:text-highlight">B2B Leads</a>
+                <a href="/?nicho=Klaviyo" className="hover:text-highlight">Klaviyo</a>
+                <a href="/?nicho=Cold-Email" className="hover:text-highlight">Cold Email</a>
+              </div>
+
+              {/* BOTÓN DEL AUTOR (SIN SOMBRAS BLANCAS) */}
+              <div className="inline-block border-4 border-bone px-4 py-2 font-mono text-sm font-bold bg-highlight text-ink mb-4 transition-transform hover:-translate-y-1">
+                {t.footerAuthor} <a href="https://reneblanco.com" target="_blank" className="underline decoration-2">René Blanco</a>
+              </div>
+              <p className="text-xs text-bone/60 max-w-3xl mx-auto leading-relaxed border-t-2 border-bone/20 pt-4 mt-2">{t.footerPrivacy}</p>
+            </div>
+          </footer>
+        </div>
+      );
+    }
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+  </script>
+</body>
+</html>
